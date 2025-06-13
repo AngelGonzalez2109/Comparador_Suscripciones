@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparador de Suscripciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .form-section h2 {
+            color: #495057;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+            margin: 5px;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3498db 0%, #74b9ff 100%);
+            color: white;
+            margin: 5px;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .controls-section {
+            background: #e8f4f8;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .controls-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .search-group {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .search-group input {
+            flex: 1;
+        }
+
+        .subscriptions-section {
+            background: #fff8e7;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #f39c12;
+        }
+
+        .subscriptions-section h2 {
+            color: #d68910;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .subscription-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .subscription-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .subscription-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .subscription-name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .subscription-price {
+            font-size: 1.5em;
+            color: #27ae60;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subscription-details {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #95a5a6;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        .result-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+
+        .result-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .result-info {
+            background: #cce7ff;
+            color: #004085;
+            border: 1px solid #b3d7ff;
+        }
+
+        .stats-display {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .subscription-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Comparador de Suscripciones</h1>
+        
+        <!-- Sección de formulario -->
+        <div class="form-section">
+            <h2>📝 Agregar Nueva Suscripción</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre">Nombre de la suscripción:</label>
+                    <input type="text" id="nombre" placeholder="Ej: Netflix, Spotify">
+                </div>
+                <div class="form-group">
+                    <label for="precio">Precio mensual ($):</label>
+                    <input type="number" id="precio" step="0.01" min="0" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoría:</label>
+                    <select id="categoria">
+                        <option value="">Seleccionar categoría</option>
+                        <option value="entretenimiento">Entretenimiento</option>
+                        <option value="educacion">Educación</option>
+                        <option value="productividad">Productividad</option>
+                        <option value="salud">Salud y Fitness</option>
+                        <option value="musica">Música</option>
+                        <option value="noticias">Noticias</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="frecuencia">Frecuencia de uso:</label>
+                    <select id="frecuencia">
+                        <option value="">Seleccionar frecuencia</option>
+                        <option value="diario">Diario</option>
+                        <option value="semanal">Semanal</option>
+                        <option value="mensual">Mensual</option>
+                        <option value="ocasional">Ocasional</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="agregarSuscripcion()">➕ Agregar Suscripción</button>
+        </div>
+
+        <!-- Sección de controles -->
+        <div class="controls-section">
+            <h2>🛠️ Herramientas de Análisis</h2>
+            <div class="controls-grid">
+                <div>
+                    <button class="btn btn-secondary" onclick="ordenarPorPrecio()">📊 Ordenar por Precio</button>
+                    <button class="btn btn-info" onclick="calcularPromedio()">💰 Calcular Promedio</button>
+                </div>
+                <div class="search-group">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="busqueda">Buscar suscripción:</label>
+                        <input type="text" id="busqueda" placeholder="Nombre de la suscripción">
+                    </div>
+                    <button class="btn btn-info" onclick="buscarSuscripcion()">🔍 Buscar</button>
+                </div>
+            </div>
+            <div id="resultado"></div>
+        </div>
+
+        <!-- Sección de suscripciones -->
+        <div class="subscriptions-section">
+            <h2>📋 Mis Suscripciones (<span id="contador">0</span>)</h2>
+            <div id="listaSuscripciones" class="subscription-grid">
+                <div class="empty-state">
+                    <p>🎯 ¡Agrega tu primera suscripción para comenzar!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array para almacenar las suscripciones
+        let suscripciones = [];
+
+        // Función para agregar una suscripción
+        function agregarSuscripcion() {
+            const nombre = document.getElementById('nombre').value.trim();
+            const precio = parseFloat(document.getElementById('precio').value);
+            const categoria = document.getElementById('categoria').value;
+            const frecuencia = document.getElementById('frecuencia').value;
+
+            // Validaciones
+            if (!nombre) {
+                mostrarResultado('Por favor ingresa el nombre de la suscripción.', 'error');
+                return;
+            }
+            if (isNaN(precio) || precio < 0) {
+                mostrarResultado('Por favor ingresa un precio válido.', 'error');
+                return;
+            }
+            if (!categoria) {
+                mostrarResultado('Por favor selecciona una categoría.', 'error');
+                return;
+            }
+            if (!frecuencia) {
+                mostrarResultado('Por favor selecciona la frecuencia de uso.', 'error');
+                return;
+            }
+
+            // Crear objeto suscripción
+            const nuevaSuscripcion = {
+                nombre: nombre,
+                precio: precio,
+                categoria: categoria,
+                frecuencia: frecuencia
+            };
+
+            // Agregar al array
+            suscripciones.push(nuevaSuscripcion);
+
+            // Limpiar formulario
+            document.getElementById('nombre').value = '';
+            document.getElementById('precio').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('frecuencia').value = '';
+
+            // Actualizar vista
+            mostrarSuscripciones();
+            mostrarResultado(`¡Suscripción "${nombre}" agregada exitosamente!`, 'success');
+        }
+
+        // Función para mostrar las suscripciones
+        function mostrarSuscripciones() {
+            const lista = document.getElementById('listaSuscripciones');
+            const contador = document.getElementById('contador');
+            
+            contador.textContent = suscripciones.length;
+
+            if (suscripciones.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><p>🎯 ¡Agrega tu primera suscripción para comenzar!</p></div>';
+                return;
+            }
+
+            let html = '';
+            for (let i = 0; i < suscripciones.length; i++) {
+                const sub = suscripciones[i];
+                html += `
+                    <div class="subscription-card">
+                        <div class="subscription-name">${sub.nombre}</div>
+                        <div class="subscription-price">$${sub.precio.toFixed(2)}/mes</div>
+                        <div class="subscription-details">
+                            <strong>Categoría:</strong> ${capitalizar(sub.categoria)}<br>
+                            <strong>Frecuencia:</strong> ${capitalizar(sub.frecuencia)}
+                        </div>
+                    </div>
+                `;
+            }
+            lista.innerHTML = html;
+        }
+
+        // Algoritmo de ordenamiento burbuja (implementado manualmente)
+        function ordenarPorPrecio() {
+            if (suscripciones.length === 0) {
+                mostrarResultado('No hay suscripciones para ordenar.', 'error');
+                return;
+            }
+
+            // Algoritmo burbuja manual
+            for (let i = 0; i < suscripciones.length - 1; i++) {
+                for (let j = 0; j < suscripciones.length - i - 1; j++) {
+                    if (suscripciones[j].precio > suscripciones[j + 1].precio) {
+                        // Intercambiar elementos
+                        let temp = suscripciones[j];
+                        suscripciones[j] = suscripciones[j + 1];
+                        suscripciones[j + 1] = temp;
+                    }
+                }
+            }
+
+            mostrarSuscripciones();
+            mostrarResultado('Suscripciones ordenadas por precio de menor a mayor.', 'success');
+        }
+
+        // Algoritmo de búsqueda lineal (implementado manualmente)
+        function buscarSuscripcion() {
+            const termino = document.getElementById('busqueda').value.trim().toLowerCase();
+            
+            if (!termino) {
+                mostrarResultado('Por favor ingresa un término de búsqueda.', 'error');
+                return;
+            }
+
+            // Búsqueda lineal manual
+            let encontrada = null;
+            let posicion = -1;
+            
+            for (let i = 0; i < suscripciones.length; i++) {
+                if (suscripciones[i].nombre.toLowerCase().includes(termino)) {
+                    encontrada = suscripciones[i];
+                    posicion = i;
+                    break;
+                }
+            }
+
+            if (encontrada) {
+                mostrarResultado(
+                    `✅ Suscripción encontrada: "${encontrada.nombre}" - $${encontrada.precio.toFixed(2)}/mes (Posición: ${posicion + 1})`,
+                    'success'
+                );
+            } else {
+                mostrarResultado(`❌ No se encontró ninguna suscripción con el término "${termino}".`, 'error');
+            }
+
+            document.getElementById('busqueda').value = '';
+        }
+
+        // Función para calcular promedio (implementado manualmente)
+        function calcularPromedio() {
+            if (suscripciones.length === 0) {
+                mostrarResultado('No hay suscripciones para calcular el promedio.', 'error');
+                return;
+            }
+
+            // Cálculo manual del promedio
+            let suma = 0;
+            for (let i = 0; i < suscripciones.length; i++) {
+                suma += suscripciones[i].precio;
+            }
+            const promedio = suma / suscripciones.length;
+
+            // Encontrar la más cara y más barata manualmente
+            let masCaraPrecio = suscripciones[0].precio;
+            let masCaraNombre = suscripciones[0].nombre;
+            let masBarataPrecio = suscripciones[0].precio;
+            let masBarataNombre = suscripciones[0].nombre;
+
+            for (let i = 1; i < suscripciones.length; i++) {
+                if (suscripciones[i].precio > masCaraPrecio) {
+                    masCaraPrecio = suscripciones[i].precio;
+                    masCaraNombre = suscripciones[i].nombre;
+                }
+                if (suscripciones[i].precio < masBarataPrecio) {
+                    masBarataPrecio = suscripciones[i].precio;
+                    masBarataNombre = suscripciones[i].nombre;
+                }
+            }
+
+            const totalMensual = suma;
+            const totalAnual = suma * 12;
+
+            mostrarResultado(`
+                <div class="stats-display">
+                    <h3>📊 Estadísticas de Suscripciones</h3>
+                    <p><strong>Precio Promedio:</strong> $${promedio.toFixed(2)}/mes</p>
+                    <p><strong>Total Mensual:</strong> $${totalMensual.toFixed(2)}</p>
+                    <p><strong>Total Anual:</strong> $${totalAnual.toFixed(2)}</p>
+                    <p><strong>Más Cara:</strong> ${masCaraNombre} ($${masCaraPrecio.toFixed(2)})</p>
+                    <p><strong>Más Barata:</strong> ${masBarataNombre} ($${masBarataPrecio.toFixed(2)})</p>
+                    <p><strong>Total de Suscripciones:</strong> ${suscripciones.length}</p>
+                </div>
+            `, 'info');
+        }
+
+        // Función para mostrar resultados
+        function mostrarResultado(mensaje, tipo) {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = `<div class="result-message result-${tipo}">${mensaje}</div>`;
+            
+            // Auto-ocultar después de 5 segundos (excepto para estadísticas)
+            if (tipo !== 'info') {
+                setTimeout(() => {
+                    resultado.innerHTML = '';
+                }, 5000);
+            }
+        }
+
+        // Función auxiliar para capitalizar texto
+        function capitalizar(texto) {
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        }
+
+        // Agregar eventos de teclado para mejor UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enter en los campos del formulario
+            const formInputs = ['nombre', 'precio', 'categoria', 'frecuencia'];
+            formInputs.forEach(id => {
+                document.getElementById(id).addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        agregarSuscripcion();
+                    }
+                });
+            });
+
+            // Enter en el campo de búsqueda
+            document.getElementById('busqueda').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    buscarSuscripcion();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
